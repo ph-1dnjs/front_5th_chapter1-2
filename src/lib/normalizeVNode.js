@@ -1,7 +1,7 @@
 export function normalizeVNode(vNode) {
   const type = typeof vNode;
 
-  if (type === "boolean" || type === "undefined" || type === null) {
+  if (type === "boolean" || type === "undefined" || vNode === null) {
     return "";
   }
 
