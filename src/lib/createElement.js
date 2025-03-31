@@ -28,11 +28,12 @@ function updateAttributes(el, props) {
   Object.entries(props || {}).forEach(([attr, value]) => {
     if (attr.startsWith("on")) {
       addEvent(el, attr.slice(2).toLowerCase(), value);
+    } else {
+      if (attr === "className") {
+        attr = "class";
+      }
+      el.setAttribute(attr, value);
     }
-    if (attr === "className") {
-      attr = "class";
-    }
-    el.setAttribute(attr, value);
   });
 
   return el;
