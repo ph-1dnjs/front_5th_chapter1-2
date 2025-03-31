@@ -19,20 +19,21 @@ export function createElement(vNode) {
     return fragment;
   }
 
-  const el = document.createElement(vNode.type);
-
-  Object.entries(vNode.props || {})
-    .filter(([attr, value]) => value)
-    .forEach(([attr, value]) => {
-      if (attr === "className") {
-        attr = "class";
-      }
-      el.setAttribute(attr, value);
-    });
-
+  const el = updateAttributes(document.createElement(vNode.type), vNode.props);
   vNode.children.map(createElement).forEach((child) => el.appendChild(child));
-
   return el;
 }
 
-function updateAttributes(el, props) {}
+function updateAttributes(el, props) {
+  Object.entries(props || {}).forEach(([attr, value]) => {
+    if (attr.startsWith("on")) {
+      addEvent(el, attr.slice(2).toLowerCase(), value);
+    }
+    if (attr === "className") {
+      attr = "class";
+    }
+    el.setAttribute(attr, value);
+  });
+
+  return el;
+}
