@@ -4,6 +4,7 @@ import { globalStore } from "../../stores";
 
 export const PostForm = () => {
   const { loggedIn } = globalStore.getState();
+  const { post } = globalStore.actions;
 
   if (!loggedIn) {
     return;
@@ -19,6 +20,11 @@ export const PostForm = () => {
       <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={(e) => {
+          e.preventDefault();
+          const content = document.querySelector("#post-content").value;
+          post(content);
+        }}
       >
         게시
       </button>
