@@ -1,7 +1,7 @@
-const eventListenersMap = new WeakMap();
+const eventListenersMap = new Map();
 
 export function setupEventListeners(root) {
-  for (const eventType in eventListenersMap) {
+  for (const eventType of eventListenersMap.keys()) {
     root.removeEventListener(eventType, handleEvents);
     root.addEventListener(eventType, handleEvents);
   }
@@ -10,18 +10,25 @@ export function setupEventListeners(root) {
 export function addEvent(element, eventType, handler) {
   if (!element || typeof handler !== "function") return;
 
-  eventListenersMap[eventType] = eventListenersMap[eventType] || new WeakMap();
-  eventListenersMap[eventType].set(element, handler);
+  if (!eventListenersMap.has(eventType)) {
+    eventListenersMap.set(eventType, new WeakMap());
+  }
+
+  eventListenersMap.get(eventType).set(element, handler);
 }
 
 export function removeEvent(element, eventType, handler) {
-  if (eventListenersMap[eventType].get(element) === handler) {
-    eventListenersMap[eventType].delete(element);
+  const handlers = eventListenersMap.get(eventType);
+
+  if (handlers && handlers.get(element) === handler) {
+    handlers.delete(element);
   }
 }
 
 export function handleEvents(e) {
-  if (eventListenersMap[e.type].has(e.target)) {
-    eventListenersMap[e.type].get(e.target)(e);
+  const handlers = eventListenersMap.get(e.type);
+
+  if (handlers && handlers.has(e.target)) {
+    handlers.get(e.target)(e);
   }
 }
